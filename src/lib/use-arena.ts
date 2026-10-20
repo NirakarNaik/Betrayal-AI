@@ -13,57 +13,55 @@ export function useArena(matchId: string, omniscient: boolean) {
   const [connection, setConnection] = useState<Connection>("connecting");
   const [error, setError] = useState<string | null>(null);
   const [lastUpdated, setLastUpdated] = useState<number | null>(null);
-  const failures = useRef(0);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const alive = useRef(true);
-
-  const fetchOnce = useCallback(async () => {
-    try {
-      const res = await fetch(`/api/matches/${matchId}?omniscient=${omniscient ? 1 : 0}`, { cache: "no-store" });
-      const body = (await res.json()) as ArenaPayload & { error?: string };
-      if (!res.ok) {
-        setError(body.error ?? `Request failed (${res.status})`);
-        setConnection(res.status === 404 ? "offline" : "reconnecting");
-        failures.current += 1;
-        return res.status === 404 ? "stop" : "retry";
-      }
-      failures.current = 0;
-      setData(body);
-      setError(null);
-      setConnection("live");
-      setLastUpdated(Date.now());
-      return body.view.phase === "complete" && body.status !== "running" ? "done" : "ok";
-    } catch {
-      failures.current += 1;
-      setConnection(failures.current > 5 ? "offline" : "reconnecting");
-      return "retry";
-    }
-  }, [matchId, omniscient]);
-
-  const schedule = useCallback(
-    (ms: number) => {
-      if (timer.current) clearTimeout(timer.current);
-      timer.current = setTimeout(async () => {
-        if (!alive.current) return;
-        const r = await fetchOnce();
-        if (!alive.current || r === "stop") return;
-        if (r === "done") return schedule(15_000);
-        const backoff = r === "retry" ? Math.min(10_000, 1000 * 2 ** Math.min(4, failures.current)) : document.hidden ? 4000 : 900;
-        schedule(backoff);
-      }, ms);
-    },
-    [fetchOnce],
-  );
+  const kick = useRef<() => void>(() => {});
 
   useEffect(() => {
-    alive.current = true;
+    let alive = true;
+    let failures = 0;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+
+    async function fetchOnce(): Promise<"ok" | "done" | "retry" | "stop"> {
+      try {
+        const res = await fetch(`/api/matches/${matchId}?omniscient=${omniscient ? 1 : 0}`, { cache: "no-store" });
+        const body = (await res.json()) as ArenaPayload & { error?: string };
+        if (!alive) return "stop";
+        if (!res.ok) {
+          failures += 1;
+          setError(body.error ?? `Request failed (${res.status})`);
+          setConnection(res.status === 404 ? "offline" : "reconnecting");
+          return res.status === 404 ? "stop" : "retry";
+        }
+        failures = 0;
+        setData(body);
+        setError(null);
+        setConnection("live");
+        setLastUpdated(Date.now());
+        return body.view.phase === "complete" && body.status !== "running" ? "done" : "ok";
+      } catch {
+        failures += 1;
+        if (alive) setConnection(failures > 5 ? "offline" : "reconnecting");
+        return "retry";
+      }
+    }
+
+    function schedule(ms: number) {
+      if (timer) clearTimeout(timer);
+      timer = setTimeout(async () => {
+        const r = await fetchOnce();
+        if (!alive || r === "stop") return;
+        if (r === "done") return schedule(15_000);
+        schedule(r === "retry" ? Math.min(10_000, 1000 * 2 ** Math.min(4, failures)) : document.hidden ? 4000 : 900);
+      }, ms);
+    }
+
+    kick.current = () => schedule(0);
     schedule(0);
     return () => {
-      alive.current = false;
-      if (timer.current) clearTimeout(timer.current);
+      alive = false;
+      if (timer) clearTimeout(timer);
     };
-  }, [schedule]);
+  }, [matchId, omniscient]);
 
-  const refresh = useCallback(() => schedule(0), [schedule]);
+  const refresh = useCallback(() => kick.current(), []);
   return { data, connection, error, setError, lastUpdated, refresh };
 }
