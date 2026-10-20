@@ -49,14 +49,14 @@ export function ResourceBar({
           {Array.from({ length: max }, (_, i) => (
             <motion.div
               key={i}
-              className="h-1.5 flex-1 rounded-[1px]"
+              className="h-1.5 flex-1"
               animate={{ backgroundColor: i < clamped ? color : "#2a2347", opacity: i < clamped ? 1 : 0.6 }}
               transition={{ duration: 0.35 }}
             />
           ))}
         </div>
       ) : (
-        <div className="h-1.5 overflow-hidden rounded-[1px] bg-line">
+        <div className="h-1.5 overflow-hidden bg-line">
           <motion.div className="h-full" style={{ backgroundColor: color }} animate={{ width: `${(clamped / max) * 100}%` }} transition={{ duration: 0.45 }} />
         </div>
       )}

@@ -14,7 +14,7 @@ export function RoundTimeline({ round, maxRounds, phase, votingRounds }: { round
           return (
             <div key={r} className="flex items-center gap-1">
               <div
-                className={`flex h-6 w-6 items-center justify-center rounded-[3px] border font-mono text-[11px] ${
+                className={`flex h-6 w-6 items-center justify-center border font-mono text-[11px] ${
                   state === "current" ? "border-violet-400 bg-violet-500/25 text-white" : state === "done" ? "border-line-strong bg-surface-3 text-ink-dim" : "border-line text-ink-faint"
                 }`}
               >

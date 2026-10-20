@@ -120,7 +120,7 @@ export function TournamentLab() {
             <input type="checkbox" checked={rotate} onChange={(e) => setRotate(e.target.checked)} className="accent-violet-500" /> Rotate seats
           </label>
         </div>
-        <div className="mt-4 rounded-[4px] border border-line bg-abyss/60 p-3 text-xs text-ink-dim">
+        <div className="mt-4 border border-line bg-abyss/60 p-3 text-xs text-ink-dim">
           {status?.liveMode ? (
             <>
               Model routing: <b className="text-ink">{status.models?.cheap}</b> for routine decisions, <b className="text-ink">{status.models?.strategic}</b> for escalations. Estimated upper bound:{" "}
@@ -142,9 +142,9 @@ export function TournamentLab() {
         {list === null ? (
           <p className="mt-2 text-sm text-ink-faint">Loading…</p>
         ) : list.length === 0 ? (
-          <p className="mt-2 rounded-[4px] border border-dashed border-line-strong p-4 text-sm text-ink-dim">No tournaments yet.</p>
+          <p className="mt-2 border border-dashed border-line-strong p-4 text-sm text-ink-dim">No tournaments yet.</p>
         ) : (
-          <ul className="mt-2 divide-y divide-line rounded-[6px] border border-line">
+          <ul className="mt-2 divide-y divide-line border border-line">
             {list.map((t) => (
               <li key={t.id}>
                 <Link href={`/tournaments/${t.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-surface-2/60">

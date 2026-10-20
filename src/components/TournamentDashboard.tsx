@@ -91,7 +91,7 @@ export function TournamentDashboard({ id }: { id: string }) {
             {a.completed} completed · {a.failed} failed · {a.cancelled} cancelled · {a.running} running · {a.pending} pending
           </p>
         </div>
-        <div className="mt-2 flex h-2 overflow-hidden rounded bg-line" role="progressbar" aria-valuenow={done} aria-valuemax={t.config.matchCount}>
+        <div className="mt-2 flex h-2 overflow-hidden bg-line" role="progressbar" aria-valuenow={done} aria-valuemax={t.config.matchCount}>
           <div className="bg-emerald-400" style={{ width: `${(a.completed / t.config.matchCount) * 100}%` }} />
           <div className="bg-rose-500" style={{ width: `${(a.failed / t.config.matchCount) * 100}%` }} />
           <div className="bg-ink-faint" style={{ width: `${(a.cancelled / t.config.matchCount) * 100}%` }} />

@@ -7,19 +7,21 @@ import { RoundTimeline } from "./RoundTimeline";
 import { ConnectionStatus, ModeBadge, type Connection } from "./StatusBits";
 
 export function Logo({ size = "sm" }: { size?: "sm" | "lg" }) {
+  const lg = size === "lg";
   return (
-    <Link href="/" className="group inline-flex items-center gap-2" aria-label="Agent Fight Club home">
-      <svg width={size === "lg" ? 40 : 26} height={size === "lg" ? 40 : 26} viewBox="0 0 40 40" aria-hidden="true">
-        <polygon points="20,2 37,11 37,29 20,38 3,29 3,11" fill="none" stroke="#8b5cf6" strokeWidth="2" />
-        <path d="M12 26l8-14 8 14M15 21h10" stroke="#22d3ee" strokeWidth="2.5" fill="none" strokeLinecap="square" />
+    <Link href="/" className="group inline-flex items-center gap-2.5" aria-label="Agent Fight Club home">
+      <svg width={lg ? 36 : 26} height={lg ? 36 : 26} viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M6 2h20l4 4v20l-4 4H6l-4-4V6z" fill="#8b5cf6" />
+        <path d="M9.5 23 16 8l6.5 15M12 18h8" stroke="#08070c" strokeWidth="3" fill="none" strokeLinecap="square" />
       </svg>
-      <span className={`font-display font-bold uppercase tracking-[0.14em] ${size === "lg" ? "text-xl" : "text-sm"}`}>
-        Agent <span className="text-violet-400">Fight</span> Club
+      <span className={`display leading-none ${lg ? "text-3xl" : "text-[22px]"}`}>
+        Agent Fight Club
       </span>
     </Link>
   );
 }
 
+/** Broadcast "scorebug" header. */
 export function ArenaHeader({
   view,
   agentMode,
@@ -40,54 +42,64 @@ export function ArenaHeader({
   onControl: (op: "pause" | "resume" | "cancel" | "speed", speed?: "standard" | "accelerated") => void;
 }) {
   const active = status === "running" || status === "paused";
+  const alive = view.players.filter((p) => p.alive).length;
   return (
-    <header className="panel flex flex-col gap-3 px-4 py-3 lg:flex-row lg:items-center lg:justify-between">
-      <div className="flex flex-wrap items-center gap-3">
-        <Logo />
-        <span className="hidden h-5 w-px bg-line lg:block" />
-        <div>
-          <p className="font-display text-xs uppercase tracking-[0.2em] text-ink-faint">Betrayal Protocol</p>
-          <p className="font-display text-lg font-bold leading-tight">
-            {view.phase === "complete" ? "Match complete" : `Round ${view.round}`}
-            <span className="ml-2 text-sm font-semibold text-cyan-300">{view.phase !== "complete" ? PHASE_LABEL[view.phase] : ""}</span>
-          </p>
+    <header className="border border-line bg-surface">
+      <div className="flex flex-col lg:flex-row lg:items-stretch">
+        <div className="flex items-center gap-4 border-b border-line px-4 py-3 lg:border-b-0 lg:border-r">
+          <Logo />
         </div>
-      </div>
-      <RoundTimeline round={view.round} maxRounds={view.maxRounds} phase={view.phase} votingRounds={view.votingRounds} />
-      <div className="flex flex-wrap items-center gap-2">
-        <ModeBadge mode={agentMode} />
-        <ConnectionStatus state={connection} lastUpdated={lastUpdated} />
-        <span className="chip text-ink-faint" title="Match seed">
-          seed {view.seed}
-        </span>
-        {canControl && active && (
-          <div className="flex items-center gap-1.5">
-            {status === "running" ? (
-              <button className="btn px-2.5 py-1.5 text-[11px]" onClick={() => onControl("pause")} title="Pause: in-flight agent decisions finish; no new ones start">
-                ❚❚ Pause
-              </button>
-            ) : (
-              <button className="btn btn-cyan px-2.5 py-1.5 text-[11px]" onClick={() => onControl("resume")}>
-                ▶ Resume
-              </button>
-            )}
-            <button
-              className="btn px-2.5 py-1.5 text-[11px]"
-              onClick={() => onControl("speed", speed === "standard" ? "accelerated" : "standard")}
-              aria-label={`Playback speed: ${speed}. Click to toggle.`}
-            >
-              {speed === "standard" ? "1×" : "4×"} speed
-            </button>
-            <button
-              className="btn btn-danger px-2.5 py-1.5 text-[11px]"
-              onClick={() => {
-                if (confirm("Cancel this match? It will be recorded as cancelled.")) onControl("cancel");
-              }}
-            >
-              Cancel
-            </button>
+        <div className="flex items-stretch">
+          <div className="flex flex-col justify-center bg-violet px-4 py-2 text-white">
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-80">Round</span>
+            <span className="display text-4xl leading-none">
+              {view.phase === "complete" ? "FT" : view.round}
+              <span className="text-xl opacity-60">/{view.maxRounds}</span>
+            </span>
           </div>
-        )}
+          <div className="flex flex-col justify-center border-r border-line px-4 py-2">
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink-faint">Phase</span>
+            <span className="display text-2xl leading-none text-cyan">{PHASE_LABEL[view.phase]}</span>
+          </div>
+          <div className="hidden flex-col justify-center border-r border-line px-4 py-2 sm:flex">
+            <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink-faint">Alive</span>
+            <span className="display text-2xl leading-none">{alive}</span>
+          </div>
+        </div>
+        <div className="flex flex-1 items-center px-4 py-2.5">
+          <RoundTimeline round={view.round} maxRounds={view.maxRounds} phase={view.phase} votingRounds={view.votingRounds} />
+        </div>
+        <div className="flex flex-wrap items-center gap-2 border-t border-line px-4 py-2.5 lg:border-l lg:border-t-0">
+          <ModeBadge mode={agentMode} />
+          <ConnectionStatus state={connection} lastUpdated={lastUpdated} />
+          <span className="chip text-ink-faint" title="Match seed">
+            seed {view.seed}
+          </span>
+          {canControl && active && (
+            <div className="flex items-center gap-1.5">
+              {status === "running" ? (
+                <button className="btn px-3 py-1.5 text-sm" onClick={() => onControl("pause")} title="Pause: in-flight agent decisions finish; no new ones start">
+                  Pause
+                </button>
+              ) : (
+                <button className="btn btn-cyan px-3 py-1.5 text-sm" onClick={() => onControl("resume")}>
+                  Resume
+                </button>
+              )}
+              <button className="btn px-3 py-1.5 text-sm" onClick={() => onControl("speed", speed === "standard" ? "accelerated" : "standard")} aria-label={`Playback speed: ${speed}. Click to toggle.`}>
+                {speed === "standard" ? "1×" : "4×"}
+              </button>
+              <button
+                className="btn btn-danger px-3 py-1.5 text-sm"
+                onClick={() => {
+                  if (confirm("Cancel this match? It will be recorded as cancelled.")) onControl("cancel");
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          )}
+        </div>
       </div>
     </header>
   );

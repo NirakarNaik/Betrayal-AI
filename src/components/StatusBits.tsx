@@ -42,7 +42,7 @@ export function ErrorBanner({ message, onDismiss }: { message: string | null; on
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -6 }}
           role="alert"
-          className="flex items-start justify-between gap-3 rounded-[4px] border border-rose-500/50 bg-rose-950/40 px-3 py-2 text-sm text-rose-200"
+          className="flex items-start justify-between gap-3 border border-rose-500/50 bg-rose-950/40 px-3 py-2 text-sm text-rose-200"
         >
           <span>{message}</span>
           {onDismiss && (
@@ -73,7 +73,7 @@ export function UsageMeter({ usage, agentMode, limitUsd }: { usage: UsageSummary
         <span className="font-mono text-sm text-cyan-300">{fmtUsd(usage.costUsd)}</span>
       </div>
       {limitUsd ? (
-        <div className="mt-2 h-1 overflow-hidden rounded bg-line">
+        <div className="mt-2 h-1 overflow-hidden bg-line">
           <div className="h-full bg-cyan-400" style={{ width: `${Math.min(100, (usage.costUsd / limitUsd) * 100)}%` }} />
         </div>
       ) : null}

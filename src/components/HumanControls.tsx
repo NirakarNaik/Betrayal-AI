@@ -147,7 +147,7 @@ export function OfferInbox({ view, send, busy }: { view: MatchView; send: Send; 
       {offers.map((o) => {
         const from = nameOf(o.fromId);
         return (
-          <div key={o.id} className="flex flex-wrap items-center gap-2 rounded-[4px] border border-dashed border-violet-400/50 bg-violet-950/30 px-2.5 py-2 text-xs">
+          <div key={o.id} className="flex flex-wrap items-center gap-2 border border-dashed border-violet-400/50 bg-violet-950/30 px-2.5 py-2 text-xs">
             <span className="font-display font-bold" style={{ color: from ? playerColor(from) : undefined }}>
               {from?.name}
             </span>

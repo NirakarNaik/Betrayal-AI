@@ -23,7 +23,7 @@ export function MatchLeaderboard({ view }: { view: MatchView }) {
       </div>
       <ol className="mt-2 space-y-1">
         {rows.map((r) => (
-          <motion.li layout key={r.p.id} className="flex items-center gap-2 rounded-[3px] bg-surface-2/60 px-2 py-1.5 text-sm">
+          <motion.li layout key={r.p.id} className="flex items-center gap-2 bg-surface-2/60 px-2 py-1.5 text-sm">
             <span className="w-5 font-mono text-xs text-ink-faint">{r.place}</span>
             <span className="h-2 w-2 rounded-full" style={{ background: playerColor(r.p) }} />
             <span className={`flex-1 truncate font-display font-semibold ${r.p.alive ? "" : "text-ink-faint line-through"}`}>{r.p.name}</span>
