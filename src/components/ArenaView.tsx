@@ -99,7 +99,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
       case "error":
         return "The match failed and was stopped. Completed rounds are preserved.";
       default:
-        return "Processing…";
+        return view.phase === "negotiation" ? "Agents are negotiating…" : view.phase === "voting" ? "Tallying sealed votes…" : "Collecting commitments…";
     }
   })();
   const deadline = waiting.humanDeadline ? Math.max(0, Math.round((waiting.humanDeadline - now) / 1000)) : null;
@@ -120,7 +120,8 @@ export function ArenaView({ matchId }: { matchId: string }) {
       )}
       {view.phase !== "complete" && (
         <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
-          {view.players.filter((p) => p.alive).length} alive · {view.phase === "commitment" ? `${view.players.filter((p) => p.hasCommitted).length} locked` : view.phase === "voting" ? `${view.players.filter((p) => p.hasVoted).length} sealed` : ""}
+          {view.players.filter((p) => p.alive).length} alive
+          {view.phase === "commitment" ? ` · ${view.players.filter((p) => p.hasCommitted).length} locked` : view.phase === "voting" ? ` · ${view.players.filter((p) => p.hasVoted).length} sealed` : ""}
         </p>
       )}
       {latestStatements.length > 0 && (
@@ -162,7 +163,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
       {view.phase === "complete" && <MatchSummary view={view} decisions={data.decisions} status={data.status} />}
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(280px,340px)_1fr] 2xl:grid-cols-[340px_1fr_340px]">
-        <div className="order-2 flex flex-col gap-3 lg:order-1 lg:h-[calc(100dvh-170px)] lg:min-h-[560px]">
+        <div className="order-2 flex h-[460px] flex-col gap-3 lg:order-1 lg:h-[calc(100dvh-170px)] lg:min-h-[560px]">
           <NegotiationFeed messages={view.messages} players={view.players} selfId={view.self?.playerId ?? null} round={view.round} omniscient={view.omniscient} />
         </div>
 
@@ -181,7 +182,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
             {isParticipant && me && view.phase !== "complete" && (
               <motion.section initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="panel border-slate-300/30 p-4" aria-label="Your controls">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                  <h2 className="panel-title text-slate-200">Your turn · {PHASE_LABEL[view.phase]}</h2>
+                  <h2 className="panel-title text-slate-200">{waiting.kind === "human" ? "Your turn" : "Your seat"} · {PHASE_LABEL[view.phase]}</h2>
                   {me.objective && (
                     <span className="text-xs text-violet-200">
                       Secret objective: <b>{me.objective.title}</b> — {me.objective.description}

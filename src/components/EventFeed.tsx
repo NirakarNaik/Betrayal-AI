@@ -15,7 +15,7 @@ export function EventFeed({ events, title = "Verified events" }: { events: GameE
     return filtered.slice(-80).reverse();
   }, [events, showAll]);
   return (
-    <section className="panel flex min-h-0 flex-col" aria-label="Event feed">
+    <section className="panel flex h-full min-h-0 flex-col" aria-label="Event feed">
       <header className="flex items-center justify-between border-b border-line px-3 py-2">
         <h2 className="panel-title">{title}</h2>
         <label className="flex items-center gap-1.5 font-mono text-[10px] uppercase text-ink-faint">

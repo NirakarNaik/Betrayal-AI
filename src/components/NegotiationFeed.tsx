@@ -24,18 +24,20 @@ export function NegotiationFeed({
   omniscient: boolean;
 }) {
   const byId = new Map(players.map((p) => [p.id, p]));
-  const endRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    endRef.current?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    // Scroll only the feed container, never the page.
+    const el = listRef.current;
+    if (el) el.scrollTo({ top: el.scrollHeight, behavior: "smooth" });
   }, [messages.length]);
 
   return (
-    <section className="panel flex min-h-0 flex-col" aria-label="Negotiation feed">
+    <section className="panel flex h-full min-h-0 flex-col" aria-label="Negotiation feed">
       <header className="flex items-center justify-between border-b border-line px-3 py-2">
         <h2 className="panel-title">Negotiation</h2>
         <span className="font-mono text-[10px] uppercase text-ink-faint">Statements · unverified</span>
       </header>
-      <div className="scroll-thin min-h-0 flex-1 space-y-2 overflow-y-auto p-3" aria-live="polite">
+      <div ref={listRef} className="scroll-thin min-h-0 flex-1 space-y-2 overflow-y-auto p-3" aria-live="polite">
         {messages.length === 0 && <p className="text-xs text-ink-faint">No messages yet. Negotiation opens each round.</p>}
         <AnimatePresence initial={false}>
           {messages.map((m) => {
@@ -88,7 +90,6 @@ export function NegotiationFeed({
             );
           })}
         </AnimatePresence>
-        <div ref={endRef} />
       </div>
     </section>
   );
