@@ -11,7 +11,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
-    "simulate": "tsx scripts/simulate.ts"
+    "simulate": "tsx scripts/simulate.mts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.137.0",
