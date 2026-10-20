@@ -286,7 +286,8 @@ export type EngineInput =
       at: number;
     }
   | { kind: "vote"; playerId: PlayerId; targetId: PlayerId | null; at: number }
-  | { kind: "advance"; at: number };
+  | { kind: "advance"; at: number; force?: boolean }
+  | { kind: "cancel"; reason: "cancelled" | "failed"; at: number };
 
 export interface EngineResult {
   ok: boolean;
