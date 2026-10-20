@@ -311,28 +311,3 @@ export interface ValidationResult {
   ok: boolean;
   error: string | null;
 }
-
-// ---------------------------------------------------------------------------
-// Tournament types
-// ---------------------------------------------------------------------------
-
-export interface MatchResultSummary {
-  matchId: string;
-  seed: number;
-  status: "completed" | "failed" | "cancelled" | "running" | "pending";
-  terminal: TerminalState | null;
-  players: {
-    playerId: PlayerId;
-    personalityId: PersonalityId | null;
-    seat: number;
-    alive: boolean;
-    credits: number;
-    health: number;
-    objectiveCompleted: boolean;
-    stats: PlayerStats;
-  }[];
-  pactsFormed: number;
-  pactsBroken: number;
-  usage: { calls: number; costUsd: number };
-  error: string | null;
-}
