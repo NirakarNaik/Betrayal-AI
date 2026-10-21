@@ -182,7 +182,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
           <span className="text-ink-faint">(only available in all-AI matches; filtered on the server)</span>
         </div>
       )}
-      {view.mode === "human" && !isParticipant && (
+      {view.mode === "human" && !isParticipant && view.phase !== "complete" && (
         <p className="text-xs text-amber-200/80">You are spectating a human match. Private information is hidden until the match ends.</p>
       )}
 
