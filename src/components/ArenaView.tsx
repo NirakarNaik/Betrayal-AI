@@ -4,6 +4,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { getRuleset } from "@/game/config";
+import { devSignal, devState } from "@/lib/dev-signals";
 import { api, PHASE_LABEL, playerColor } from "@/lib/ui";
 import { useArena } from "@/lib/use-arena";
 import { AgentRoster } from "./AgentRoster";
@@ -33,6 +34,29 @@ export function ArenaView({ matchId }: { matchId: string }) {
   const [busy, setBusy] = useState(false);
   const [revealDismissed, setRevealDismissed] = useState<string | null>(null);
   const now = useNow(Boolean(data?.waiting.humanDeadline));
+
+  // Dev-only: expose arena state + phase transitions to Reticle.
+  const phaseKey = data ? `${data.view.round}:${data.view.phase}:${data.status}` : null;
+  useEffect(() => {
+    if (!data) return;
+    const v = data.view;
+    devState("arena", {
+      matchId: v.id,
+      mode: v.mode,
+      round: v.round,
+      phase: v.phase,
+      status: data.status,
+      agentMode: data.agentMode,
+      waiting: data.waiting.kind,
+      alive: v.players.filter((p) => p.alive).length,
+      isParticipant: v.self !== null,
+      winnerId: v.terminal?.winnerId ?? null,
+      events: v.events.length,
+    });
+    devSignal("arena:phase", { round: v.round, phase: v.phase, status: data.status });
+    if (v.phase === "complete") devSignal("arena:complete", { reason: v.terminal?.reason ?? null, winnerId: v.terminal?.winnerId ?? null, status: data.status });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phaseKey]);
 
   if (!data) {
     return (
@@ -64,9 +88,11 @@ export function ArenaView({ matchId }: { matchId: string }) {
     setBusy(true);
     try {
       await api(`/api/matches/${matchId}/action`, { method: "POST", body: JSON.stringify(body) });
+      devSignal("human:action", { type: (body as { type: string }).type });
       refresh();
       return true;
     } catch (e) {
+      devSignal("human:rejected", { type: (body as { type: string }).type, error: (e as Error).message });
       setError((e as Error).message);
       return false;
     } finally {

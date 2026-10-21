@@ -1,5 +1,6 @@
 'use client';
 import { useEffect } from 'react';
+import { DEV_SIGNALS, DEV_STORES } from '@/lib/dev-signals';
 
 /** Dev-only: connect Reticle + install the React adapter, after hydration. */
 export function ReticleDev() {
@@ -31,9 +32,9 @@ export function ReticleDev() {
         // read-only.
         // No state library detected. If you add one, register it here — see https://docs.reticle.sh/state-management
         registerCapabilities({
-          testids: [], // none found; add data-testid to your key elements
-          signals: [], // names you pass to reticle.signal()
-          stores: [], // the keys you registered above
+          testids: ["agent-card-p1", "agent-card-p2", "agent-card-p3", "agent-card-p4", "agent-card-p5", "action-strike", "action-guard", "action-scout", "action-investigate", "action-sabotage", "action-trade", "action-mediate", "action-recover"],
+          signals: [...DEV_SIGNALS],
+          stores: [...DEV_STORES],
         });
       },
     );
