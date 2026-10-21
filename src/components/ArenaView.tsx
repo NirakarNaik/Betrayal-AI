@@ -18,14 +18,21 @@ import { RoundReveal } from "./RoundReveal";
 import { RulesPanel } from "./RulesPanel";
 import { ErrorBanner, UsageMeter } from "./StatusBits";
 
-function useNow(active: boolean) {
+/** Self-contained countdown: ticks on its own so the arena does not re-render every second. */
+function TurnTimer({ deadline, serverTime }: { deadline: number; serverTime: number }) {
+  // Correct for clock skew between browser and server.
+  const [skew] = useState(() => Date.now() - serverTime);
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
-    if (!active) return;
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
-  }, [active]);
-  return now;
+  }, []);
+  const secs = Math.max(0, Math.round((deadline + skew - now) / 1000));
+  return (
+    <p className={`mt-1 font-mono text-xs ${secs < 30 ? "text-rose-300" : "text-ink-faint"}`}>
+      Turn timer {Math.floor(secs / 60)}:{String(secs % 60).padStart(2, "0")} — then defaults apply
+    </p>
+  );
 }
 
 export function ArenaView({ matchId }: { matchId: string }) {
@@ -33,7 +40,6 @@ export function ArenaView({ matchId }: { matchId: string }) {
   const { data, connection, error, setError, lastUpdated, refresh } = useArena(matchId, omniscient);
   const [busy, setBusy] = useState(false);
   const [revealDismissed, setRevealDismissed] = useState<string | null>(null);
-  const now = useNow(Boolean(data?.waiting.humanDeadline));
 
   // Dev-only: expose arena state + phase transitions to Reticle.
   const phaseKey = data ? `${data.view.round}:${data.view.phase}:${data.status}` : null;
@@ -128,7 +134,6 @@ export function ArenaView({ matchId }: { matchId: string }) {
         return view.phase === "negotiation" ? "Agents are negotiating…" : view.phase === "voting" ? "Tallying sealed votes…" : "Collecting commitments…";
     }
   })();
-  const deadline = waiting.humanDeadline ? Math.max(0, Math.round((waiting.humanDeadline - now) / 1000)) : null;
   const latestStatements = data.decisions.filter((d) => d.summary && d.round === view.round).slice(-4);
 
   const center = (
@@ -139,11 +144,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
         {waiting.kind === "agents" && <span className="mr-1.5 inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-300" />}
         {waitingText}
       </p>
-      {deadline !== null && (
-        <p className={`mt-1 font-mono text-xs ${deadline < 30 ? "text-rose-300" : "text-ink-faint"}`}>
-          Turn timer {Math.floor(deadline / 60)}:{String(deadline % 60).padStart(2, "0")} — then defaults apply
-        </p>
-      )}
+      {waiting.humanDeadline !== null && <TurnTimer key={waiting.humanDeadline} deadline={waiting.humanDeadline} serverTime={data.serverTime} />}
       {view.phase !== "complete" && (
         <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-ink-faint">
           {view.players.filter((p) => p.alive).length} alive
@@ -248,7 +249,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
 
         {/* Side rail: rendered once. Below 2xl it sits under the arena; at 2xl it becomes the right column. */}
         <aside className="order-3 grid grid-cols-1 gap-3 md:grid-flow-dense md:grid-cols-2 lg:col-start-2 2xl:col-start-3 2xl:row-start-1 2xl:flex 2xl:h-[calc(100dvh-170px)] 2xl:min-h-[560px] 2xl:flex-col">
-          <MatchLeaderboard view={view} />
+          <MatchLeaderboard players={view.players} terminal={view.terminal} phase={view.phase} />
           <div className="h-[420px] md:col-span-2 md:row-start-2 2xl:h-auto 2xl:min-h-0 2xl:flex-1">
             <EventFeed events={view.events} />
           </div>

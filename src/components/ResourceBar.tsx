@@ -1,10 +1,10 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 /** Segmented resource meter that flashes a delta badge when the value changes. */
-export function ResourceBar({
+export const ResourceBar = memo(function ResourceBar({
   label,
   value,
   max,
@@ -47,17 +47,12 @@ export function ResourceBar({
       {segments && max <= 6 ? (
         <div className="flex gap-0.5">
           {Array.from({ length: max }, (_, i) => (
-            <motion.div
-              key={i}
-              className="h-1.5 flex-1"
-              animate={{ backgroundColor: i < clamped ? color : "#2a2347", opacity: i < clamped ? 1 : 0.6 }}
-              transition={{ duration: 0.35 }}
-            />
+            <div key={i} className="h-1.5 flex-1 transition-colors duration-300" style={{ backgroundColor: i < clamped ? color : "#2a2536" }} />
           ))}
         </div>
       ) : (
         <div className="h-1.5 overflow-hidden bg-line">
-          <motion.div className="h-full" style={{ backgroundColor: color }} animate={{ width: `${(clamped / max) * 100}%` }} transition={{ duration: 0.45 }} />
+          <div className="h-full transition-[width] duration-500" style={{ backgroundColor: color, width: `${(clamped / max) * 100}%` }} />
         </div>
       )}
       <AnimatePresence>
@@ -75,4 +70,4 @@ export function ResourceBar({
       </AnimatePresence>
     </div>
   );
-}
+});

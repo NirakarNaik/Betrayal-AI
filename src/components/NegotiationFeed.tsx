@@ -1,7 +1,6 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import type { Message } from "@/game/types";
 import type { PlayerView } from "@/game/visibility";
 import { playerColor } from "@/lib/ui";
@@ -10,7 +9,7 @@ import { playerColor } from "@/lib/ui";
  * Negotiation feed. Every message is an AGENT STATEMENT — unverified and
  * non-binding. Only the event feed shows verified facts.
  */
-export function NegotiationFeed({
+export const NegotiationFeed = memo(function NegotiationFeed({
   messages,
   players,
   selfId,
@@ -39,7 +38,6 @@ export function NegotiationFeed({
       </header>
       <div ref={listRef} className="scroll-thin min-h-0 flex-1 space-y-2 overflow-y-auto p-3" aria-live="polite">
         {messages.length === 0 && <p className="text-xs text-ink-faint">No messages yet. Negotiation opens each round.</p>}
-        <AnimatePresence initial={false}>
           {messages.map((m) => {
             const from = byId.get(m.fromId);
             const to = m.toId ? byId.get(m.toId) : null;
@@ -47,11 +45,7 @@ export function NegotiationFeed({
             const involvesMe = selfId !== null && (m.fromId === selfId || m.toId === selfId);
             const color = from ? playerColor(from) : "#999";
             return (
-              <motion.div
-                key={m.id}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                className={`rounded-[4px] border px-2.5 py-2 ${isPrivate ? "border-dashed border-violet-400/50 bg-violet-950/25" : "border-line bg-surface-2/70"} ${m.round !== round ? "opacity-55" : ""}`}
+              <div key={m.id} className={`afc-enter rounded-[4px] border px-2.5 py-2 ${isPrivate ? "border-dashed border-violet-400/50 bg-violet-950/25" : "border-line bg-surface-2/70"} ${m.round !== round ? "opacity-55" : ""}`}
               >
                 <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
                   <span className="font-semibold font-bold" style={{ color }}>
@@ -86,11 +80,10 @@ export function NegotiationFeed({
                     </span>
                   </p>
                 )}
-              </motion.div>
+              </div>
             );
           })}
-        </AnimatePresence>
       </div>
     </section>
   );
-}
+});

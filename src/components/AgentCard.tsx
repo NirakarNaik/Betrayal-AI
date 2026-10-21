@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, useAnimationControls } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { memo, useEffect, useRef } from "react";
 import type { RulesetConfig } from "@/game/config";
 import type { PlayerView } from "@/game/visibility";
 import { playerColor } from "@/lib/ui";
@@ -19,7 +19,7 @@ const ACTIVITY_LABEL: Record<NonNullable<AgentActivity>, string> = {
 };
 
 /** Player plate: name bar, big health pips, compact resource meters. */
-export function AgentCard({
+export const AgentCard = memo(function AgentCard({
   player,
   caps,
   activity,
@@ -100,13 +100,7 @@ export function AgentCard({
             <p className="font-mono text-[9px] uppercase tracking-[0.16em] text-ink-faint">HP</p>
             <div className="mt-1 flex gap-1">
               {Array.from({ length: caps.health }, (_, i) => (
-                <motion.span
-                  key={i}
-                  className="block h-6 w-3"
-                  style={{ clipPath: "polygon(0 0, 100% 0, 100% 80%, 70% 100%, 0 100%)" }}
-                  animate={{ backgroundColor: i < player.health ? "#ff3b5c" : "#2a2536" }}
-                  transition={{ duration: 0.3 }}
-                />
+                <span key={i} className="block h-6 w-3 transition-colors duration-300" style={{ clipPath: "polygon(0 0, 100% 0, 100% 80%, 70% 100%, 0 100%)", backgroundColor: i < player.health ? "#ff3b5c" : "#2a2536" }} />
               ))}
             </div>
           </div>
@@ -132,4 +126,4 @@ export function AgentCard({
       )}
     </motion.article>
   );
-}
+});

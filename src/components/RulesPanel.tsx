@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { memo, useState } from "react";
 import { getRuleset } from "@/game/config";
 import { ACTION_META } from "@/lib/ui";
 import type { ActionType } from "@/game/types";
 
-export function RulesPanel({ rulesetId, defaultOpen = false }: { rulesetId: string; defaultOpen?: boolean }) {
+export const RulesPanel = memo(function RulesPanel({ rulesetId, defaultOpen = false }: { rulesetId: string; defaultOpen?: boolean }) {
   const [open, setOpen] = useState(defaultOpen);
   const r = getRuleset(rulesetId);
   const cost = (a: ActionType) => {
@@ -43,4 +43,4 @@ export function RulesPanel({ rulesetId, defaultOpen = false }: { rulesetId: stri
       )}
     </section>
   );
-}
+});

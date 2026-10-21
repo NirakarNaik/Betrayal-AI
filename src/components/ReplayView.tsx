@@ -118,7 +118,7 @@ export function ReplayView({ matchId }: { matchId: string }) {
           <RoundReveal view={view} show={view.phase === "reveal"} />
         </div>
         <div className="flex h-[640px] flex-col gap-3">
-          <MatchLeaderboard view={view} />
+          <MatchLeaderboard players={view.players} terminal={view.terminal} phase={view.phase} />
           <div className="min-h-0 flex-1">
             <EventFeed events={view.events} />
           </div>

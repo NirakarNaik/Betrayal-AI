@@ -2,9 +2,10 @@
   "name": "agent-fight-club",
   "version": "0.1.0",
   "private": true,
-  "description": "Agent Fight Club — Betrayal Protocol: an AI-agent social deduction arena.",
+  "description": "Agent Fight Club \u2014 Betrayal Protocol: an AI-agent social deduction arena.",
   "scripts": {
     "dev": "next dev",
+    "dev:reticle": "node scripts/dev-reticle.mjs",
     "build": "next build",
     "start": "next start",
     "lint": "eslint .",

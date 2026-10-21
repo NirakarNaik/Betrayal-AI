@@ -35,7 +35,7 @@ export function RoundReveal({ view, show }: { view: MatchView; show: boolean }) 
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
-          className="absolute inset-0 z-20 flex items-center justify-center bg-void/80 p-3 backdrop-blur-[2px]"
+          className="absolute inset-0 z-20 flex items-center justify-center bg-void/90 p-3"
           role="dialog"
           aria-label={`Round ${round} reveal`}
         >

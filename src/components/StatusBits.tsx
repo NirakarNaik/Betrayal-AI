@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, motion } from "framer-motion";
+import { memo } from "react";
 import type { UsageSummary } from "@/llm/usage";
 import { fmtUsd } from "@/lib/ui";
 
@@ -56,7 +57,7 @@ export function ErrorBanner({ message, onDismiss }: { message: string | null; on
   );
 }
 
-export function UsageMeter({ usage, agentMode, limitUsd }: { usage: UsageSummary; agentMode: "live" | "demo"; limitUsd?: number | null }) {
+export const UsageMeter = memo(function UsageMeter({ usage, agentMode, limitUsd }: { usage: UsageSummary; agentMode: "live" | "demo"; limitUsd?: number | null }) {
   if (agentMode === "demo") {
     return (
       <div className="panel p-3">
@@ -107,4 +108,4 @@ export function UsageMeter({ usage, agentMode, limitUsd }: { usage: UsageSummary
       <p className="mt-1.5 text-[10px] text-ink-faint">Costs are estimates from SDK-reported tokens and the configured pricing table.</p>
     </div>
   );
-}
+});

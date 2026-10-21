@@ -36,6 +36,7 @@ npm run dev                    # http://localhost:3000
 | Command | What it does |
 |---|---|
 | `npm run dev` | Development server |
+| `npm run dev:reticle` | Development server with Reticle verification instrumentation (opt-in; slower) |
 | `npm run build` / `npm start` | Production build / serve (Node runtime) |
 | `npm test` | 72 Vitest tests (engine, objectives, integration with mocked Claude, tournaments, storage) |
 | `npm run typecheck` | `tsc --noEmit` (strict) |
@@ -124,8 +125,9 @@ Tournaments never start automatically and are capped at 10 matches in live mode.
 
 ## Verification with Reticle (development)
 
-The app is instrumented for [Reticle](https://docs.reticle.sh). The bridge is dev-only and absent from
-production builds. With `npm run dev` running:
+The app is instrumented for [Reticle](https://docs.reticle.sh). The bridge is **opt-in**, because it stamps every
+JSX element and hooks the runtime, and it is never in production builds. Start the instrumented dev server with
+`npm run dev:reticle`, then:
 
 ```bash
 npx @reticlehq/server serve     # local daemon on :4400 (no account needed for local use)

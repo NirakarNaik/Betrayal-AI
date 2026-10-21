@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { memo } from "react";
 import type { MatchView } from "@/game/visibility";
 import { playerColor } from "@/lib/ui";
 
@@ -8,7 +8,8 @@ import { playerColor } from "@/lib/ui";
  * Live standings. While the match runs, ordering uses public information only
  * (alive, health, credits); final placements come from the engine's terminal state.
  */
-export function MatchLeaderboard({ view }: { view: MatchView }) {
+export const MatchLeaderboard = memo(function MatchLeaderboard({ players, terminal, phase }: { players: MatchView["players"]; terminal: MatchView["terminal"]; phase: MatchView["phase"] }) {
+  const view = { players, terminal, phase };
   const final = view.terminal?.placements.length ? view.terminal.placements : null;
   const ended = view.phase === "complete";
   const rows = final
@@ -24,7 +25,7 @@ export function MatchLeaderboard({ view }: { view: MatchView }) {
       </div>
       <ol className="mt-2 space-y-1">
         {rows.map((r) => (
-          <motion.li layout key={r.p.id} className="flex items-center gap-2 bg-surface-2/60 px-2 py-1.5 text-sm">
+          <li key={r.p.id} className="flex items-center gap-2 bg-surface-2/60 px-2 py-1.5 text-sm">
             <span className="w-5 font-mono text-xs text-ink-faint">{r.place}</span>
             <span className="h-2 w-2 rounded-full" style={{ background: playerColor(r.p) }} />
             <span className={`flex-1 truncate font-semibold ${r.p.alive ? "" : "text-ink-faint line-through"}`}>{r.p.name}</span>
@@ -38,9 +39,9 @@ export function MatchLeaderboard({ view }: { view: MatchView }) {
                 {r.p.alive ? `${r.p.health}♥ ${r.p.credits}cr` : `out R${r.p.eliminatedRound}`}
               </span>
             )}
-          </motion.li>
+          </li>
         ))}
       </ol>
     </section>
   );
-}
+});

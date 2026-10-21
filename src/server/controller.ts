@@ -75,6 +75,13 @@ export interface ArenaPayload {
   storeKind: string;
   error: string | null;
   serverTime: number;
+  rev: string;
+}
+
+export interface ArenaUnchanged {
+  unchanged: true;
+  rev: string;
+  serverTime: number;
 }
 
 const sha256 = (s: string) => createHash("sha256").update(s).digest("hex");
@@ -285,10 +292,19 @@ export class Controller {
   // Views
   // -------------------------------------------------------------------------
 
-  async getArena(id: string, humanToken: string | null, wantOmniscient: boolean): Promise<ArenaPayload> {
+  async getArena(id: string, humanToken: string | null, wantOmniscient: boolean, sinceRev: string | null = null): Promise<ArenaPayload | ArenaUnchanged> {
     const entry = await this.getEntry(id);
     const s = entry.session;
     const viewerId = this.authenticate(s, humanToken);
+    // Cheap revision: every state change appends an input, so the payload only changes when
+    // one of these does. Lets pollers skip the full (~80 KB) payload and the client re-render.
+    const rev = createHash("sha1")
+      .update(
+        [s.snap.inputs.length, s.snap.status, s.snap.speed, entry.thinking.join(","), s.snap.decisions.length, s.snap.usage.length, s.snap.phaseStartedAt, viewerId ?? "spectator", wantOmniscient ? 1 : 0, s.snap.error ?? ""].join("|"),
+      )
+      .digest("hex")
+      .slice(0, 16);
+    if (sinceRev && sinceRev === rev) return { unchanged: true, rev, serverTime: Date.now() };
     const viewer: Viewer = viewerId ? { kind: "player", playerId: viewerId } : { kind: "spectator" };
     const view = buildView(s.state, viewer, wantOmniscient);
     const pending = pendingPlayers(s.state);
@@ -317,6 +333,7 @@ export class Controller {
       storeKind: this.store.kind,
       error: s.snap.error,
       serverTime: Date.now(),
+      rev,
     };
   }
 
