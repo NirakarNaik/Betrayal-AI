@@ -1,0 +1,71 @@
+I built a game where AI agents lie to each other. 🃏
+
+Five AI agents sit at one table.
+They talk. They make deals. They promise to protect each other.
+
+Then each one secretly picks a move.
+And sometimes the "ally" attacks.
+
+The project is called Betrayal Protocol.
+
+How a round works:
+1️⃣ Talk: agents send public messages or make private deals, like "I'll give you 3 credits if you don't attack me."
+2️⃣ Lock in: everyone secretly picks one move: strike, guard, sabotage, investigate and more.
+3️⃣ Reveal: all moves happen at the same time.
+4️⃣ Every few rounds, they vote someone out.
+
+The twist: nothing the agents say has to be true. Promises are just words.
+
+So who decides what actually happens?
+Not the AI. A game engine written in plain code checks every move and decides the result. The AI only suggests what to do; the rules stay fair and the same for everyone.
+
+Each agent has its own personality:
+♜ The Chessmaster plays the long game
+🐍 The Snake looks for the right moment to betray
+✦ The Politician builds alliances
+✶ The Chaos Gremlin is unpredictable
+Σ The Quant only trusts the numbers
+
+One real message from a match:
+"Snake, we've held solid since round 2. I guard, you guard. Pact holds."
+Did the pact hold? You'll have to watch. 👀
+
+🔍 Testing it with Reticle
+Normal tests check if the code works. I also wanted to check if the app feels right to a real user.
+
+I used Reticle, a tool that tests a running web app from the inside. I connected it to the game so it could see the real game state (which round it is, which phase, whether a match has finished), not just what's on the screen.
+
+It found bugs I had missed:
+• The "cancel match" pop-up was closing by itself, so I replaced it with a two-step cancel button
+• Some panels were being drawn twice on the page
+• Cancelled matches showed the wrong scoreboard
+• Some buttons had no clear labels for screen readers
+
+Reticle only runs while I'm developing, so it never slows down the live site.
+
+😅 The problem I hit: Vercel
+I tried to deploy on Vercel, and the game didn't work. Here's why, in simple words:
+
+• Matches play in the background. When you start a match, the server keeps running it for a few minutes. Vercel shuts the server down right after it replies, so the match freezes partway through.
+• Many copies, no shared memory. Vercel runs lots of small copies of the server. A running match lives in one copy's memory, and your next click might reach a different copy that has never heard of it.
+• No saving to files. The game saved matches as files, but Vercel doesn't keep files between requests.
+
+Lesson learned: serverless isn't right for every app. Anything that needs to keep running in the background needs either a server that stays on, or a redesign so each request does a small piece of work and saves it to a database.
+
+🛠 Tech stack:
+• Next.js 16, React 19 and TypeScript
+• Tailwind CSS 4 and Framer Motion for the design and animations
+• Claude AI through the Anthropic API: Claude Haiku 4.5 for everyday moves, Claude Opus 5.5 for big decisions
+• Zod to check every AI response before the game uses it
+• Vitest for testing (72 tests)
+• Reticle for testing the running app
+• Supabase (optional) for saving matches
+
+What I learned:
+AI is great at talking, negotiating and even bluffing. But if you want fair results, let the AI suggest and let the code decide.
+
+Would you trust an AI that promised not to attack you? 🤔
+
+🔗 github.com/NirakarNaik/Betrayal-AI
+
+#AI #ArtificialIntelligence #Claude #NextJS #WebDevelopment
