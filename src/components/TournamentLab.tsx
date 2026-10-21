@@ -72,7 +72,7 @@ export function TournamentLab() {
         <Logo />
         {status && <ModeBadge mode={status.liveMode ? "live" : "demo"} />}
       </nav>
-      <h1 className="mt-8 font-display text-3xl font-bold uppercase tracking-wide">Tournament Lab</h1>
+      <h1 className="mt-8 display text-3xl">Tournament Lab</h1>
       <p className="mt-1 max-w-2xl text-sm text-ink-dim">
         Run batches of all-AI matches under identical rules with rotating seats and reproducible seeds, then compare personalities. Small samples are noisy — every statistic shows its sample size.
       </p>
@@ -149,7 +149,7 @@ export function TournamentLab() {
               <li key={t.id}>
                 <Link href={`/tournaments/${t.id}`} className="flex items-center justify-between gap-3 px-4 py-3 hover:bg-surface-2/60">
                   <div>
-                    <p className="font-display font-semibold">{t.name}</p>
+                    <p className="font-semibold">{t.name}</p>
                     <p className="font-mono text-[10px] text-ink-faint">
                       {new Date(t.createdAt).toLocaleString()} · {t.completed}/{t.matchCount} completed{t.failed ? ` · ${t.failed} failed` : ""}
                     </p>

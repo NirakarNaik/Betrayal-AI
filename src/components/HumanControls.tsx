@@ -39,13 +39,15 @@ export function ActionSelector({
               key={o.action}
               role="radio"
               aria-checked={active}
+              aria-label={meta.label}
+              data-testid={`action-${o.action}`}
               disabled={!o.affordable}
               title={o.reasonUnavailable ?? meta.blurb}
               onClick={() => onChange({ action: o.action, targetId: o.requiresTarget ? (o.validTargets.includes(value.targetId ?? "") ? value.targetId : null) : null, amount: Math.max(1, Math.min(value.amount, o.maxAmount || 1)) })}
               className={`rounded-[4px] border px-2 py-2 text-left transition-colors disabled:cursor-not-allowed disabled:opacity-35 ${active ? "bg-surface-3" : "bg-surface-2 hover:bg-surface-3"}`}
               style={{ borderColor: active ? meta.tone : "#2a2347" }}
             >
-              <span className="block font-display text-[13px] font-bold" style={{ color: meta.tone }}>
+              <span className="block font-semibold text-[13px] font-bold" style={{ color: meta.tone }}>
                 {meta.label}
               </span>
               <span className="block font-mono text-[10px] text-ink-faint">{o.affordable ? costText(o) : o.reasonUnavailable}</span>
@@ -65,7 +67,7 @@ export function ActionSelector({
                   key={id}
                   onClick={() => onChange({ ...value, targetId: id })}
                   aria-pressed={value.targetId === id}
-                  className={`rounded-[3px] border px-2.5 py-1 font-display text-sm ${value.targetId === id ? "bg-surface-3" : "bg-surface-2"}`}
+                  className={`rounded-[3px] border px-2.5 py-1 font-semibold text-sm ${value.targetId === id ? "bg-surface-3" : "bg-surface-2"}`}
                   style={{ borderColor: value.targetId === id ? playerColor(p) : "#2a2347", color: playerColor(p) }}
                 >
                   {p.name}
@@ -119,7 +121,7 @@ export function CommitDock({ view, send, busy }: { view: MatchView; send: Send; 
   if (self.committed) {
     return (
       <div className="space-y-2">
-        <p className="font-display text-sm text-emerald-300">Locked in: {describeProposal(self.committed.proposal, nameOf)}</p>
+        <p className="font-semibold text-sm text-emerald-300">Locked in: {describeProposal(self.committed.proposal, nameOf)}</p>
         <p className="text-xs text-ink-faint">Your action is sealed and cannot change. Waiting for the other players — results appear at the reveal.</p>
       </div>
     );
@@ -148,7 +150,7 @@ export function OfferInbox({ view, send, busy }: { view: MatchView; send: Send; 
         const from = nameOf(o.fromId);
         return (
           <div key={o.id} className="flex flex-wrap items-center gap-2 border border-dashed border-violet-400/50 bg-violet-950/30 px-2.5 py-2 text-xs">
-            <span className="font-display font-bold" style={{ color: from ? playerColor(from) : undefined }}>
+            <span className="font-semibold font-bold" style={{ color: from ? playerColor(from) : undefined }}>
               {from?.name}
             </span>
             <span className="text-ink-dim">
@@ -261,19 +263,19 @@ export function VotePanel({ view, send, busy }: { view: MatchView; send: Send; b
   const alive = view.players.filter((p) => p.alive);
   if (self.vote !== undefined) {
     const t = self.vote ? view.players.find((p) => p.id === self.vote)?.name : "abstain";
-    return <p className="font-display text-sm text-emerald-300">Vote sealed: {t}. Waiting for the other players…</p>;
+    return <p className="font-semibold text-sm text-emerald-300">Vote sealed: {t}. Waiting for the other players…</p>;
   }
   return (
     <div className="space-y-2.5">
       <p className="text-xs text-ink-dim">Vote to eliminate a player. A strict majority of living players ({Math.floor(alive.length / 2) + 1}) is required; ties do nothing.</p>
       <div className="flex flex-wrap gap-1.5" role="radiogroup" aria-label="Vote target">
         {alive.map((p) => (
-          <button key={p.id} role="radio" aria-checked={choice === p.id} onClick={() => setChoice(p.id)} className={`rounded-[3px] border px-2.5 py-1 font-display text-sm ${choice === p.id ? "bg-rose-500/20" : "bg-surface-2"}`} style={{ borderColor: choice === p.id ? "#f43f5e" : "#2a2347", color: playerColor(p) }}>
+          <button key={p.id} role="radio" aria-checked={choice === p.id} onClick={() => setChoice(p.id)} className={`rounded-[3px] border px-2.5 py-1 font-semibold text-sm ${choice === p.id ? "bg-rose-500/20" : "bg-surface-2"}`} style={{ borderColor: choice === p.id ? "#f43f5e" : "#2a2347", color: playerColor(p) }}>
             {p.name}
             {p.id === self.playerId ? " (you)" : ""}
           </button>
         ))}
-        <button role="radio" aria-checked={choice === null} onClick={() => setChoice(null)} className={`rounded-[3px] border px-2.5 py-1 font-display text-sm ${choice === null ? "border-ink-dim bg-surface-3" : "border-line bg-surface-2"} text-ink-dim`}>
+        <button role="radio" aria-checked={choice === null} onClick={() => setChoice(null)} className={`rounded-[3px] border px-2.5 py-1 font-semibold text-sm ${choice === null ? "border-ink-dim bg-surface-3" : "border-line bg-surface-2"} text-ink-dim`}>
           Abstain
         </button>
       </div>

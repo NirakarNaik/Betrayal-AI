@@ -95,7 +95,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
       case "paused":
         return "Match paused. In-flight decisions were applied; no new decisions will start.";
       case "complete":
-        return "The protocol has concluded.";
+        return data.status === "cancelled" ? "This match was cancelled. Events up to that point are preserved." : "The protocol has concluded.";
       case "error":
         return "The match failed and was stopped. Completed rounds are preserved.";
       default:
@@ -108,7 +108,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
   const center = (
     <div className="panel scanline relative overflow-hidden p-4 text-center">
       <p className="panel-title">{view.phase === "complete" ? "Final" : `Round ${view.round} / ${view.maxRounds}`}</p>
-      <p className="mt-1 font-display text-2xl font-bold text-glow-cyan text-cyan-200">{PHASE_LABEL[view.phase]}</p>
+      <p className={`mt-1 display text-3xl ${data.status === "cancelled" || data.status === "failed" ? "text-danger" : "text-cyan"}`}>{data.status === "cancelled" ? "Cancelled" : data.status === "failed" ? "Failed" : PHASE_LABEL[view.phase]}</p>
       <p className="mt-2 text-sm text-ink-dim" aria-live="polite">
         {waiting.kind === "agents" && <span className="mr-1.5 inline-block h-2 w-2 animate-pulse rounded-full bg-cyan-300" />}
         {waitingText}
@@ -163,7 +163,7 @@ export function ArenaView({ matchId }: { matchId: string }) {
       {view.phase === "complete" && <MatchSummary view={view} decisions={data.decisions} status={data.status} />}
 
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-[minmax(280px,340px)_1fr] 2xl:grid-cols-[340px_1fr_340px]">
-        <div className="order-2 flex h-[460px] flex-col gap-3 lg:order-1 lg:h-[calc(100dvh-170px)] lg:min-h-[560px]">
+        <div className="order-2 flex h-[460px] flex-col gap-3 lg:sticky lg:top-3 lg:order-1 lg:row-span-2 lg:h-[calc(100dvh-170px)] lg:min-h-[560px] 2xl:row-span-1">
           <NegotiationFeed messages={view.messages} players={view.players} selfId={view.self?.playerId ?? null} round={view.round} omniscient={view.omniscient} />
         </div>
 
@@ -218,26 +218,19 @@ export function ArenaView({ matchId }: { matchId: string }) {
             )}
           </AnimatePresence>
 
-          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 2xl:hidden">
-            <MatchLeaderboard view={view} />
-            <UsageMeter usage={data.usage} agentMode={data.agentMode} />
-            <div className="h-[420px] md:col-span-2">
-              <EventFeed events={view.events} />
-            </div>
-            <div className="md:col-span-2">
-              <RulesPanel rulesetId={view.rulesetId} />
-            </div>
-          </div>
         </div>
 
-        <div className="order-3 hidden flex-col gap-3 2xl:flex 2xl:h-[calc(100dvh-170px)] 2xl:min-h-[560px]">
+        {/* Side rail: rendered once. Below 2xl it sits under the arena; at 2xl it becomes the right column. */}
+        <aside className="order-3 grid grid-cols-1 gap-3 md:grid-flow-dense md:grid-cols-2 lg:col-start-2 2xl:col-start-3 2xl:row-start-1 2xl:flex 2xl:h-[calc(100dvh-170px)] 2xl:min-h-[560px] 2xl:flex-col">
           <MatchLeaderboard view={view} />
-          <div className="min-h-0 flex-1">
+          <div className="h-[420px] md:col-span-2 md:row-start-2 2xl:h-auto 2xl:min-h-0 2xl:flex-1">
             <EventFeed events={view.events} />
           </div>
           <UsageMeter usage={data.usage} agentMode={data.agentMode} />
-          <RulesPanel rulesetId={view.rulesetId} />
-        </div>
+          <div className="md:col-span-2">
+            <RulesPanel rulesetId={view.rulesetId} />
+          </div>
+        </aside>
       </div>
     </main>
   );

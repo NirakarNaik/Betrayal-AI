@@ -61,13 +61,13 @@ export function TournamentDashboard({ id }: { id: string }) {
     <main className="mx-auto max-w-6xl space-y-4 px-4 py-6 sm:px-6">
       <nav className="flex items-center justify-between">
         <Logo />
-        <Link href="/tournaments" className="font-display text-xs uppercase tracking-widest text-ink-dim hover:text-ink">
+        <Link href="/tournaments" className="font-semibold text-xs uppercase tracking-widest text-ink-dim hover:text-ink">
           ← Tournament Lab
         </Link>
       </nav>
       <header className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl font-bold uppercase tracking-wide">{t.config.name}</h1>
+          <h1 className="display text-3xl">{t.config.name}</h1>
           <p className="font-mono text-[11px] text-ink-faint">
             {t.config.agentMode} agents · {t.config.rulesetId} · seeds {t.config.seedStart}–{t.config.seedStart + t.config.matchCount - 1} · seats {t.config.rotateSeats ? "rotated" : "fixed"}
             {t.metadata.modelCheap && ` · ${t.metadata.modelCheap} / ${t.metadata.modelStrategic} (escalate ≥ ${t.metadata.escalationThreshold})`}
@@ -133,7 +133,7 @@ export function TournamentDashboard({ id }: { id: string }) {
                   return (
                     <tr key={p.personalityId} className="border-t border-line font-mono">
                       <td className="py-2 font-sans">
-                        <span className="flex items-center gap-2 font-display font-semibold" style={{ color: prof.color }}>
+                        <span className="flex items-center gap-2 font-semibold" style={{ color: prof.color }}>
                           <AgentAvatar personalityId={p.personalityId} color={prof.color} size={22} label="" />
                           {prof.name}
                         </span>
@@ -195,7 +195,7 @@ export function TournamentDashboard({ id }: { id: string }) {
                     <span className={`chip ${STATUS_STYLE[m.status] ?? ""}`}>{m.status}</span>
                     {m.attempts > 1 && <span className="ml-1 font-mono text-[10px] text-amber-300">retry</span>}
                   </td>
-                  <td className="py-1.5 font-display" style={{ color: winner ? PUBLIC_PERSONALITIES[winner.personalityId].color : undefined }}>
+                  <td className="py-1.5 font-semibold" style={{ color: winner ? PUBLIC_PERSONALITIES[winner.personalityId].color : undefined }}>
                     {m.status === "completed" && winner ? PUBLIC_PERSONALITIES[winner.personalityId].name : "—"}
                   </td>
                   <td className="py-1.5 text-xs text-ink-dim">{m.error ? <span className="text-rose-300">{m.error}</span> : (m.terminal?.reason.replaceAll("_", " ") ?? "")}</td>

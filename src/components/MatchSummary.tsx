@@ -14,14 +14,15 @@ export function MatchSummary({ view, decisions, status }: { view: MatchView; dec
   const fallbacks = decisions.filter((d) => d.source === "fallback").length;
   return (
     <motion.section initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="panel overflow-hidden" aria-label="Match summary">
-      <div className="scanline border-b border-line bg-gradient-to-r from-violet-950/60 via-surface to-cyan-950/30 p-5">
+      <div className="relative border-b border-line p-5 pl-7">
+        <div className="absolute inset-y-0 left-0 w-1.5" style={{ background: winner ? playerColor(winner) : "var(--color-line-strong)" }} />
         <p className="panel-title text-violet-300">{status === "cancelled" ? "Match cancelled" : status === "failed" ? "Match failed" : "Protocol complete"}</p>
         {winner ? (
           <div className="mt-3 flex items-center gap-4">
             <AgentAvatar personalityId={winner.personalityId} color={playerColor(winner)} size={72} label={`${winner.name} avatar`} />
             <div>
               <p className="font-mono text-[11px] uppercase tracking-widest text-ink-faint">Winner</p>
-              <h2 className="font-display text-3xl font-bold text-glow-violet" style={{ color: playerColor(winner) }}>
+              <h2 className="display text-3xl text-glow-violet" style={{ color: playerColor(winner) }}>
                 {winner.name}
               </h2>
               <p className="text-sm text-ink-dim">
@@ -51,7 +52,7 @@ export function MatchSummary({ view, decisions, status }: { view: MatchView; dec
                 return (
                   <tr key={pl.playerId} className="border-t border-line">
                     <td className="py-2 font-mono text-ink-faint">{pl.place}</td>
-                    <td className="py-2 font-display font-semibold" style={{ color: playerColor(p) }}>
+                    <td className="py-2 font-semibold" style={{ color: playerColor(p) }}>
                       {p.name} {!p.alive && <span className="ml-1 font-mono text-[10px] text-rose-400">out R{p.eliminatedRound}</span>}
                     </td>
                     <td className="py-2 text-xs text-ink-dim">
@@ -76,7 +77,7 @@ export function MatchSummary({ view, decisions, status }: { view: MatchView; dec
           </p>
           <div className="mt-3 flex flex-wrap gap-2">
             <Link href={`/arena/${view.id}/replay`} className="btn btn-cyan">
-              ▶ Watch replay
+              <span aria-hidden="true">▶</span> Watch replay
             </Link>
             <Link href="/arena/new" className="btn btn-primary">
               New match

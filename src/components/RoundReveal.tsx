@@ -54,7 +54,7 @@ export function RoundReveal({ view, show }: { view: MatchView; show: boolean }) 
                     transition={{ delay: 0.15 + i * 0.18 }}
                     className="flex items-center gap-2 text-sm"
                   >
-                    <span className="w-28 truncate font-display font-bold" style={{ color: actor ? playerColor(actor) : undefined }}>
+                    <span className="w-28 truncate font-semibold font-bold" style={{ color: actor ? playerColor(actor) : undefined }}>
                       {actor?.name}
                     </span>
                     <span className="rounded-[2px] px-1.5 py-0.5 font-mono text-[11px] font-bold" style={{ background: `${ACTION_META[action].tone}22`, color: ACTION_META[action].tone }}>
@@ -64,7 +64,7 @@ export function RoundReveal({ view, show }: { view: MatchView; show: boolean }) 
                     {target && (
                       <>
                         <span className="text-ink-faint">→</span>
-                        <span className="truncate font-display" style={{ color: playerColor(target) }}>
+                        <span className="truncate font-semibold" style={{ color: playerColor(target) }}>
                           {target.name}
                         </span>
                       </>

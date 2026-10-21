@@ -54,13 +54,13 @@ export function NegotiationFeed({
                 className={`rounded-[4px] border px-2.5 py-2 ${isPrivate ? "border-dashed border-violet-400/50 bg-violet-950/25" : "border-line bg-surface-2/70"} ${m.round !== round ? "opacity-55" : ""}`}
               >
                 <div className="flex flex-wrap items-center gap-1.5 text-[11px]">
-                  <span className="font-display font-bold" style={{ color }}>
+                  <span className="font-semibold font-bold" style={{ color }}>
                     {from?.name ?? m.fromId}
                   </span>
                   {isPrivate && (
                     <>
                       <span className="text-ink-faint">→</span>
-                      <span className="font-display font-bold" style={{ color: to ? playerColor(to) : undefined }}>
+                      <span className="font-semibold font-bold" style={{ color: to ? playerColor(to) : undefined }}>
                         {to?.name ?? m.toId}
                       </span>
                       <span className={`chip ${involvesMe ? "border-violet-300 text-violet-200" : "border-violet-400/40 text-violet-300/80"}`}>

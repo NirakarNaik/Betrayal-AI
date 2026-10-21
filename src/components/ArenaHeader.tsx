@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import type { MatchView } from "@/game/visibility";
 import { PHASE_LABEL } from "@/lib/ui";
 import { RoundTimeline } from "./RoundTimeline";
@@ -42,6 +43,12 @@ export function ArenaHeader({
   onControl: (op: "pause" | "resume" | "cancel" | "speed", speed?: "standard" | "accelerated") => void;
 }) {
   const active = status === "running" || status === "paused";
+  const [confirmCancel, setConfirmCancel] = useState(false);
+  useEffect(() => {
+    if (!confirmCancel) return;
+    const t = setTimeout(() => setConfirmCancel(false), 5000);
+    return () => clearTimeout(t);
+  }, [confirmCancel]);
   const alive = view.players.filter((p) => p.alive).length;
   return (
     <header className="border border-line bg-surface">
@@ -53,13 +60,13 @@ export function ArenaHeader({
           <div className="flex flex-col justify-center bg-violet px-4 py-2 text-white">
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] opacity-80">Round</span>
             <span className="display text-4xl leading-none">
-              {view.phase === "complete" ? "FT" : view.round}
+              {view.phase === "complete" ? (status === "completed" ? "FT" : view.round) : view.round}
               <span className="text-xl opacity-60">/{view.maxRounds}</span>
             </span>
           </div>
           <div className="flex flex-col justify-center border-r border-line px-4 py-2">
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink-faint">Phase</span>
-            <span className="display text-2xl leading-none text-cyan">{PHASE_LABEL[view.phase]}</span>
+            <span className={`display text-2xl leading-none ${status === "cancelled" || status === "failed" ? "text-danger" : "text-cyan"}`}>{status === "cancelled" ? "Cancelled" : status === "failed" ? "Failed" : PHASE_LABEL[view.phase]}</span>
           </div>
           <div className="hidden flex-col justify-center border-r border-line px-4 py-2 sm:flex">
             <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-ink-faint">Alive</span>
@@ -89,14 +96,15 @@ export function ArenaHeader({
               <button className="btn px-3 py-1.5 text-sm" onClick={() => onControl("speed", speed === "standard" ? "accelerated" : "standard")} aria-label={`Playback speed: ${speed}. Click to toggle.`}>
                 {speed === "standard" ? "1×" : "4×"}
               </button>
-              <button
-                className="btn btn-danger px-3 py-1.5 text-sm"
-                onClick={() => {
-                  if (confirm("Cancel this match? It will be recorded as cancelled.")) onControl("cancel");
-                }}
-              >
-                Cancel
-              </button>
+              {confirmCancel ? (
+                <button className="btn btn-danger px-3 py-1.5 text-sm" style={{ background: "var(--color-danger)", color: "#fff" }} onClick={() => onControl("cancel")} title="The match will be recorded as cancelled">
+                  Confirm cancel
+                </button>
+              ) : (
+                <button className="btn btn-danger px-3 py-1.5 text-sm" onClick={() => setConfirmCancel(true)}>
+                  Cancel
+                </button>
+              )}
             </div>
           )}
         </div>

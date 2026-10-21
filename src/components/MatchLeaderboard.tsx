@@ -9,7 +9,8 @@ import { playerColor } from "@/lib/ui";
  * (alive, health, credits); final placements come from the engine's terminal state.
  */
 export function MatchLeaderboard({ view }: { view: MatchView }) {
-  const final = view.terminal?.placements ?? null;
+  const final = view.terminal?.placements.length ? view.terminal.placements : null;
+  const ended = view.phase === "complete";
   const rows = final
     ? final.map((pl) => ({ p: view.players.find((x) => x.id === pl.playerId)!, place: pl.place, points: pl.points, score: pl.protocolScore, obj: pl.objectiveCompleted }))
     : [...view.players]
@@ -18,7 +19,7 @@ export function MatchLeaderboard({ view }: { view: MatchView }) {
   return (
     <section className="panel p-3" aria-label="Standings">
       <div className="flex items-baseline justify-between">
-        <h2 className="panel-title">{final ? "Final placements" : "Standings"}</h2>
+        <h2 className="panel-title">{final ? "Final placements" : ended ? "Standings at stop" : "Standings"}</h2>
         {!final && <span className="font-mono text-[10px] text-ink-faint">public info only</span>}
       </div>
       <ol className="mt-2 space-y-1">
@@ -26,7 +27,7 @@ export function MatchLeaderboard({ view }: { view: MatchView }) {
           <motion.li layout key={r.p.id} className="flex items-center gap-2 bg-surface-2/60 px-2 py-1.5 text-sm">
             <span className="w-5 font-mono text-xs text-ink-faint">{r.place}</span>
             <span className="h-2 w-2 rounded-full" style={{ background: playerColor(r.p) }} />
-            <span className={`flex-1 truncate font-display font-semibold ${r.p.alive ? "" : "text-ink-faint line-through"}`}>{r.p.name}</span>
+            <span className={`flex-1 truncate font-semibold ${r.p.alive ? "" : "text-ink-faint line-through"}`}>{r.p.name}</span>
             {r.score !== null ? (
               <span className="font-mono text-[11px] text-ink-dim" title="Protocol score / placement points">
                 {r.obj ? "★ " : ""}

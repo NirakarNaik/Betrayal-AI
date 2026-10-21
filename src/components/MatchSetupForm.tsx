@@ -60,7 +60,7 @@ export function MatchSetupForm() {
         <Logo />
         {status && <ModeBadge mode={status.liveMode ? "live" : "demo"} />}
       </nav>
-      <h1 className="mt-8 font-display text-3xl font-bold uppercase tracking-wide">Match setup</h1>
+      <h1 className="mt-8 display text-3xl">Match setup</h1>
       <p className="mt-1 text-sm text-ink-dim">Configure a Betrayal Protocol match. Seeds make objective assignment and every engine outcome reproducible.</p>
       <div className="mt-4">
         <ErrorBanner message={error} onDismiss={() => setError(null)} />
@@ -74,7 +74,7 @@ export function MatchSetupForm() {
             aria-pressed={mode === m}
             className={`panel p-4 text-left transition-colors ${mode === m ? "border-violet-400 bg-surface-2" : "hover:border-line-strong"}`}
           >
-            <p className="font-display text-lg font-bold uppercase tracking-wide">{m === "spectator" ? "Spectator match" : "Human match"}</p>
+            <p className="display text-lg">{m === "spectator" ? "Spectator match" : "Human match"}</p>
             <p className="mt-1 text-sm text-ink-dim">
               {m === "spectator" ? "Five AI agents compete. Watch with an optional director's view of every secret." : "You take a seat against four AI agents. You only see what your seat is entitled to see."}
             </p>

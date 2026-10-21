@@ -4,7 +4,7 @@ import { motion, useAnimationControls } from "framer-motion";
 import { useEffect, useRef } from "react";
 import type { RulesetConfig } from "@/game/config";
 import type { PlayerView } from "@/game/visibility";
-import { personality, playerColor } from "@/lib/ui";
+import { playerColor } from "@/lib/ui";
 import { AgentAvatar } from "./AgentAvatar";
 import { ResourceBar } from "./ResourceBar";
 
@@ -37,8 +37,7 @@ export function AgentCard({
   compact?: boolean;
 }) {
   const color = playerColor(player);
-  const prof = personality(player.personalityId);
-  const controls = useAnimationControls();
+    const controls = useAnimationControls();
   const prevHealth = useRef(player.health);
   useEffect(() => {
     if (player.health < prevHealth.current) {
@@ -65,24 +64,26 @@ export function AgentCard({
           <AgentAvatar personalityId={player.personalityId} color={color} size={compact ? 34 : 40} eliminated={!player.alive} label={`${player.name} emblem`} />
         </div>
         <div className="min-w-0 flex-1 py-1.5">
-          <h3 className="display truncate text-[24px] leading-none" style={{ color: player.alive ? color : undefined }}>
+          <h3 className="display truncate text-[23px] leading-none" style={{ color: player.alive ? color : undefined }}>
             {player.name}
           </h3>
-          <p className="mt-0.5 truncate font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
-            {player.kind === "human" ? "human" : prof?.name} · seat {player.seat + 1}
+          <p className="mt-0.5 flex items-center gap-2 truncate font-mono text-[10px] uppercase tracking-[0.12em] text-ink-faint">
+            <span>seat {player.seat + 1}{player.kind === "human" ? " · human" : ""}</span>
+            {player.alive && activity && (
+              <span className={`flex items-center gap-1 ${activity === "thinking" ? "text-cyan" : activity === "committed" || activity === "voted" ? "text-ink" : ""}`}>
+                {activity === "thinking" && <span className="h-1.5 w-1.5 animate-pulse bg-cyan" />}
+                {(activity === "committed" || activity === "voted") && <span className="h-1.5 w-1.5 bg-ink" />}
+                {ACTIVITY_LABEL[activity]}
+              </span>
+            )}
           </p>
         </div>
-        <div className="flex flex-col items-end gap-1">
-          {isSelf && <span className="chip border-ink text-ink">you</span>}
-          {hasPactWithSelf && <span className="chip border-ok/60 text-ok">pact</span>}
-          {player.alive && activity && (
-            <span className={`flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.12em] ${activity === "thinking" ? "text-cyan" : activity === "committed" || activity === "voted" ? "text-ink" : "text-ink-faint"}`}>
-              {activity === "thinking" && <span className="h-1.5 w-1.5 animate-pulse bg-cyan" />}
-              {(activity === "committed" || activity === "voted") && <span className="h-1.5 w-1.5 bg-ink" />}
-              {ACTIVITY_LABEL[activity]}
-            </span>
-          )}
-        </div>
+        {(isSelf || hasPactWithSelf) && (
+          <div className="flex flex-col items-end gap-1">
+            {isSelf && <span className="chip border-ink text-ink">you</span>}
+            {hasPactWithSelf && <span className="chip border-ok/60 text-ok">pact</span>}
+          </div>
+        )}
       </div>
 
       {!player.alive ? (

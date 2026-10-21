@@ -96,7 +96,7 @@ export function ReplayView({ matchId }: { matchId: string }) {
           ◀
         </button>
         <button className="btn btn-primary px-4 py-1.5" onClick={() => setPlaying((p) => !p)}>
-          {playing ? "❚❚ Pause" : "▶ Play"}
+          <span aria-hidden="true">{playing ? "❚❚" : "▶"}</span> {playing ? "Pause" : "Play"}
         </button>
         <button className="btn px-3 py-1.5" onClick={() => setI((x) => Math.min(frames.length - 1, x + 1))} aria-label="Step forward">
           ▶
@@ -114,7 +114,7 @@ export function ReplayView({ matchId }: { matchId: string }) {
           <NegotiationFeed messages={view.messages} players={view.players} selfId={null} round={view.round} omniscient={view.omniscient} />
         </div>
         <div className="relative">
-          <AgentRoster view={view} rules={rules} waiting={{ kind: "reveal", playerIds: [], humanDeadline: null }} center={<div className="panel p-4 text-center font-display text-xl text-cyan-200">{PHASE_LABEL[view.phase]}</div>} />
+          <AgentRoster view={view} rules={rules} waiting={{ kind: "reveal", playerIds: [], humanDeadline: null }} center={<div className="panel p-4 text-center display text-xl text-cyan-200">{PHASE_LABEL[view.phase]}</div>} />
           <RoundReveal view={view} show={view.phase === "reveal"} />
         </div>
         <div className="flex h-[640px] flex-col gap-3">
