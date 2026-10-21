@@ -397,6 +397,46 @@
     }
   }
 
+  /* Light beige theme for the home page. Overrides the palette for everything inside it,
+     including Tailwind's built-in cyan/amber shades used by the status badges. */
+  .theme-paper {
+    --color-void: #f2e8d5;
+    --color-abyss: #e9dcc3;
+    --color-surface: #f8f1e3;
+    --color-surface-2: #ece0c8;
+    --color-surface-3: #e2d3b6;
+    --color-line: #dccdb0;
+    --color-line-strong: #c2ae8a;
+    --color-ink: #1d2230;
+    --color-ink-dim: #4b5263;
+    --color-ink-faint: #7b7462;
+    --color-cyan: #1f7a70;
+    --color-warn: #a8650a;
+    --color-cyan-300: #0f6f7c;
+    --color-cyan-400: #0f6f7c;
+    --color-amber-300: #9a5b06;
+    --color-amber-400: #9a5b06;
+    --sheet: #fffcf5;
+  }
+  body:has(.theme-paper) {
+    background: #f2e8d5;
+  }
+  .theme-paper .table-light {
+    opacity: 0.15;
+  }
+  .theme-paper .btn-primary {
+    background-color: var(--color-ink);
+    color: #f8f1e3;
+  }
+  .theme-paper .btn-primary:hover:not(:disabled) {
+    color: #fff;
+  }
+  .theme-paper .sheet {
+    box-shadow:
+      0 30px 60px -24px rgb(60 42 15 / 0.35),
+      0 8px 18px -8px rgb(60 42 15 / 0.25);
+  }
+
   /* Tutorial dialog. */
   .tutorial {
     margin: auto;
