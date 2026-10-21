@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
 @theme {
-  --color-void: #08070c;
-  --color-abyss: #0d0b13;
-  --color-surface: #121019;
-  --color-surface-2: #191622;
-  --color-surface-3: #221e2e;
-  --color-line: #2a2536;
-  --color-line-strong: #3d3650;
-  --color-ink: #f1eff6;
-  --color-ink-dim: #b1abc2;
-  --color-ink-faint: #767089;
-  --color-violet: #8b5cf6;
-  --color-violet-bright: #b49cff;
-  --color-cyan: #2dd4e6;
-  --color-cyan-dim: #0e7490;
+  --color-void: #121724;
+  --color-abyss: #0d111b;
+  --color-surface: #181e2d;
+  --color-surface-2: #1f2637;
+  --color-surface-3: #283044;
+  --color-line: #2c3446;
+  --color-line-strong: #434d65;
+  --color-ink: #eee8db;
+  --color-ink-dim: #aab1c0;
+  --color-ink-faint: #7a8397;
+  --color-violet: #e5484d;
+  --color-violet-bright: #ff8b7e;
+  --color-cyan: #5ccfc0;
+  --color-cyan-dim: #23786e;
   --color-danger: #ff3b5c;
   --color-warn: #f5a524;
   --color-ok: #3ddc97;
 
+  /* "violet" is the historical token name for the brand accent: now sealing-wax red. */
+  --color-bone: #eee8db;
+  --color-seal: #e5484d;
+
   --font-display: var(--font-display-family), "Arial Narrow", ui-sans-serif, sans-serif;
-  --font-sans: var(--font-sans-family), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-display-family), ui-sans-serif, system-ui, sans-serif;
+  --font-type: var(--font-type-family), "Courier New", ui-monospace, monospace;
   --font-mono: var(--font-mono-family), ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
@@ -33,7 +38,7 @@
     color: var(--color-ink);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    font-feature-settings: "ss01", "tnum";
+    font-feature-settings: "tnum";
   }
   ::selection {
     background: color-mix(in oklab, var(--color-violet) 50%, transparent);
@@ -48,7 +53,7 @@
   /* Flat, near-black stage with a faint vertical light and film grain — no candy gradients. */
   .afc-backdrop {
     background:
-      linear-gradient(180deg, color-mix(in oklab, var(--color-violet) 7%, transparent), transparent 380px),
+      radial-gradient(1100px 520px at 70% -120px, color-mix(in oklab, var(--color-bone) 6%, transparent), transparent 70%),
       var(--color-void);
   }
   .afc-grid {
@@ -87,6 +92,7 @@
   .display {
     font-family: var(--font-display);
     font-weight: 800;
+    font-variation-settings: "wdth" 75, "opsz" 96;
     text-transform: uppercase;
     letter-spacing: 0.01em;
     line-height: 0.92;
@@ -113,6 +119,7 @@
     gap: 0.5rem;
     padding: 0.6rem 1.05rem;
     font-family: var(--font-display);
+    font-variation-settings: "wdth" 80, "opsz" 24;
     font-weight: 800;
     font-size: 0.98rem;
     letter-spacing: 0.06em;
@@ -138,13 +145,25 @@
     opacity: 0.38;
     cursor: not-allowed;
   }
+  /* Primary actions are plain bone plates; red is reserved for betrayal and the brand mark. */
   .btn-primary {
-    background: var(--color-violet);
-    color: #fff;
+    background: var(--color-bone);
+    color: var(--color-abyss);
     box-shadow: none;
   }
+  .btn-primary {
+    background-image: linear-gradient(var(--color-seal), var(--color-seal));
+    background-repeat: no-repeat;
+    background-size: 0% 100%;
+    transition:
+      background-size 260ms cubic-bezier(0.7, 0, 0.3, 1),
+      color 200ms,
+      transform 120ms;
+  }
   .btn-primary:hover:not(:disabled) {
-    background: #9d74ff;
+    /* Restate the image: the generic .btn:hover background shorthand would otherwise clear it. */
+    background: linear-gradient(var(--color-seal), var(--color-seal)) left / 100% 100% no-repeat var(--color-bone);
+    color: #fff;
     box-shadow: none;
   }
   .btn-cyan {

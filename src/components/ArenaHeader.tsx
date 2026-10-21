@@ -12,8 +12,8 @@ export function Logo({ size = "sm" }: { size?: "sm" | "lg" }) {
   return (
     <Link href="/" className="group inline-flex items-center gap-2.5" aria-label="Agent Fight Club home">
       <svg width={lg ? 36 : 26} height={lg ? 36 : 26} viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M6 2h20l4 4v20l-4 4H6l-4-4V6z" fill="#8b5cf6" />
-        <path d="M9.5 23 16 8l6.5 15M12 18h8" stroke="#08070c" strokeWidth="3" fill="none" strokeLinecap="square" />
+        <path d="M6 2h20l4 4v20l-4 4H6l-4-4V6z" fill="#e5484d" />
+        <path d="M9.5 23 16 8l6.5 15M12 18h8" stroke="#121724" strokeWidth="3" fill="none" strokeLinecap="square" />
       </svg>
       <span className={`display leading-none ${lg ? "text-3xl" : "text-[22px]"}`}>
         Agent Fight Club
