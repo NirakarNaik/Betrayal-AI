@@ -278,6 +278,125 @@
     mix-blend-mode: multiply;
   }
 
+  /* Text links: an underline that slides in from the left. */
+  .link-slide {
+    background: linear-gradient(currentColor, currentColor) left bottom / 0% 1px no-repeat;
+    padding-bottom: 2px;
+    transition:
+      background-size 240ms cubic-bezier(0.7, 0, 0.3, 1),
+      color 160ms;
+  }
+  .link-slide:hover,
+  .link-slide:focus-visible {
+    background-size: 100% 1px;
+  }
+
+  /* Hero: five coloured lights, one per agent, drifting slowly over the table. */
+  .table-light {
+    position: absolute;
+    width: 34rem;
+    height: 34rem;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0.16;
+    animation: table-drift 22s ease-in-out infinite alternate;
+  }
+  @keyframes table-drift {
+    0% {
+      transform: translate(0, 0) scale(1);
+    }
+    50% {
+      transform: translate(6%, -8%) scale(1.12);
+    }
+    100% {
+      transform: translate(-7%, 6%) scale(0.92);
+    }
+  }
+
+  /* Agent profiles: lift, tint and a colour bar on hover. --agent is set inline. */
+  .agent-card {
+    position: relative;
+    transition:
+      transform 300ms cubic-bezier(0.2, 0.7, 0.2, 1),
+      background-color 300ms;
+  }
+  .agent-card::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 3px;
+    background: var(--agent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 320ms cubic-bezier(0.7, 0, 0.3, 1);
+  }
+  .agent-card:hover {
+    transform: translateY(-6px);
+    background-color: color-mix(in oklab, var(--agent) 9%, transparent);
+  }
+  .agent-card:hover::before {
+    transform: scaleX(1);
+  }
+  .agent-card .agent-emblem {
+    transition: transform 400ms cubic-bezier(0.3, 1.6, 0.4, 1);
+  }
+  .agent-card:hover .agent-emblem {
+    transform: rotate(-10deg) scale(1.12);
+  }
+
+  /* Round steps: the number tilts and the panel warms to its step colour. --step is set inline. */
+  .step-card {
+    background-color: var(--color-void);
+    transition: background-color 300ms;
+  }
+  .step-card .step-num {
+    display: inline-block;
+    transition: transform 360ms cubic-bezier(0.3, 1.6, 0.4, 1);
+  }
+  .step-card:hover {
+    background-color: color-mix(in oklab, var(--step) 8%, var(--color-void));
+  }
+  .step-card:hover .step-num {
+    transform: translateY(-4px) rotate(-6deg);
+  }
+
+  /* Results: the winner's colour slides in along the left edge. */
+  .result-row {
+    transition:
+      background-color 200ms,
+      box-shadow 260ms;
+  }
+  .result-row:hover {
+    background-color: color-mix(in oklab, var(--agent) 7%, transparent);
+    box-shadow: inset 4px 0 0 var(--agent);
+  }
+
+  /* Reading progress in the five agent colours, driven by scroll where the browser supports it. */
+  .scroll-progress {
+    display: none;
+  }
+  @supports (animation-timeline: scroll()) {
+    .scroll-progress {
+      display: block;
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 50;
+      height: 3px;
+      transform-origin: left;
+      background: linear-gradient(90deg, #a78bfa, #4ade80, #38bdf8, #f472b6, #facc15);
+      animation: scroll-grow linear both;
+      animation-timeline: scroll(root);
+    }
+    @keyframes scroll-grow {
+      from {
+        transform: scaleX(0);
+      }
+      to {
+        transform: scaleX(1);
+      }
+    }
+  }
+
   /* Tutorial dialog. */
   .tutorial {
     margin: auto;
