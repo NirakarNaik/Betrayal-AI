@@ -53,7 +53,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="theme-paper min-h-dvh bg-void text-ink">
+    <main className="theme-paper min-h-dvh overflow-x-clip bg-void text-ink">
       <div className="scroll-progress" aria-hidden="true" />
       <div className="mx-auto max-w-[1240px] px-4 pb-20 sm:px-8">
         <nav className="flex items-center justify-between py-5">
