@@ -235,6 +235,49 @@
   .ticker-track {
     animation: ticker 60s linear infinite;
   }
+
+  /* Landing page. Sentence-case headline, slightly condensed, very tight. */
+  .headline {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-variation-settings: "wdth" 88, "opsz" 96;
+    letter-spacing: -0.018em;
+    line-height: 0.94;
+    text-wrap: balance;
+  }
+  .type {
+    font-family: var(--font-type);
+  }
+
+  /* The transcript: a sheet of bone paper set on the dark table. */
+  .sheet {
+    position: relative;
+    background: var(--sheet, var(--color-bone));
+    color: #1b2030;
+    box-shadow:
+      0 1px 0 rgb(255 255 255 / 0.4) inset,
+      0 30px 60px -20px rgb(0 0 0 / 0.65),
+      0 8px 18px -8px rgb(0 0 0 / 0.5);
+  }
+  .redaction {
+    display: inline-block;
+    height: 1.05em;
+    vertical-align: -0.15em;
+    background: #161b28;
+  }
+  .stamp {
+    font-family: var(--font-display);
+    font-variation-settings: "wdth" 75, "opsz" 96;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    color: var(--color-seal);
+    border: 3px solid currentColor;
+    padding: 0.3rem 0.7rem 0.2rem;
+    mix-blend-mode: multiply;
+  }
+
 }
 
 @media (prefers-reduced-motion: reduce) {
